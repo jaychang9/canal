@@ -198,9 +198,9 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
             logger.debug("是否开启Doris RoutineLoad 导入:{}",enableDorisRoutineLoad);
         }
 
-        String operateTypeName = mqDestination.getDorisDeleteOnField();
-        if (enableDorisRoutineLoad && StringUtils.isBlank(operateTypeName)) {
-            operateTypeName = "m_op_type";
+        String dorisDeleteOnField = mqDestination.getDorisDeleteOnField();
+        if (enableDorisRoutineLoad && StringUtils.isBlank(dorisDeleteOnField)) {
+            dorisDeleteOnField = "m_op_type";
         }
         List<ProducerRecord<String, byte[]>> records = new ArrayList<>();
         // 获取当前topic的分区数
@@ -254,7 +254,7 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                         if (flatMessagePart != null) {
                             if (enableDorisRoutineLoad) {
                                 Map<String, String> dataMap = flatMessagePart.getData().get(0);
-                                dataMap.put(operateTypeName, flatMessagePart.getType());
+                                dataMap.put(dorisDeleteOnField, flatMessagePart.getType());
                                 if (logger.isDebugEnabled()) {
                                     logger.debug("发送到Kafka的消息:{}",dataMap);
                                 }
@@ -268,8 +268,18 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                     }
                 } else {
                     final int partition = mqDestination.getPartition() != null ? mqDestination.getPartition() : 0;
-                    records.add(new ProducerRecord<>(topicName, partition, null, JSON.toJSONBytes(flatMessage,
-                        SerializerFeature.WriteMapNullValue)));
+                    if (enableDorisRoutineLoad) {
+                        Map<String, String> dataMap = flatMessage.getData().get(0);
+                        dataMap.put(dorisDeleteOnField,flatMessage.getType());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("发送到Kafka的消息:{}",dataMap);
+                        }
+                        records.add(new ProducerRecord<>(topicName, partition, null, JSON.toJSONBytes(dataMap,
+                                SerializerFeature.WriteMapNullValue)));
+                    } else {
+                        records.add(new ProducerRecord<>(topicName, partition, null, JSON.toJSONBytes(flatMessage,
+                                SerializerFeature.WriteMapNullValue)));
+                    }
                 }
             }
         }
