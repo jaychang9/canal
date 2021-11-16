@@ -254,9 +254,7 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                         if (flatMessagePart != null) {
                             if (enableDorisRoutineLoad) {
                                 Map<String, String> dataMap = flatMessagePart.getData().get(0);
-                                if(StringUtils.isNotBlank(operateTypeName)) {
-                                    dataMap.put(operateTypeName, flatMessagePart.getType());
-                                }
+                                dataMap.put(operateTypeName, flatMessagePart.getType());
                                 if (logger.isDebugEnabled()) {
                                     logger.debug("发送到Kafka的消息:{}",dataMap);
                                 }
