@@ -196,6 +196,8 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
     }
 
     private List<Future> send(MQDestination mqDestination, String topicName, Message message, boolean flat) {
+        boolean enableDorisRoutineLoad = true;
+        String operateTypeName = "m_op_type";
         List<ProducerRecord<String, byte[]>> records = new ArrayList<>();
         // 获取当前topic的分区数
         Integer partitionNum = MQMessageUtils.parseDynamicTopicPartition(topicName, mqDestination.getDynamicTopicPartitionNum());
@@ -246,8 +248,17 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                     for (int i = 0; i < length; i++) {
                         FlatMessage flatMessagePart = partitionFlatMessage[i];
                         if (flatMessagePart != null) {
-                            records.add(new ProducerRecord<>(topicName, i, null, JSON.toJSONBytes(flatMessagePart,
-                                SerializerFeature.WriteMapNullValue)));
+                            if (enableDorisRoutineLoad) {
+                                Map<String, String> dataMap = flatMessagePart.getData().get(0);
+                                if(StringUtils.isNotBlank(operateTypeName)) {
+                                    dataMap.put(operateTypeName, flatMessagePart.getType());
+                                }
+                                records.add(new ProducerRecord<>(topicName, i, null, JSON.toJSONBytes(dataMap,
+                                        SerializerFeature.WriteMapNullValue)));
+                            } else {
+                                records.add(new ProducerRecord<>(topicName, i, null, JSON.toJSONBytes(flatMessagePart,
+                                        SerializerFeature.WriteMapNullValue)));
+                            }
                         }
                     }
                 } else {

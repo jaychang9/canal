@@ -37,7 +37,8 @@ public class CanalLauncher {
             setGlobalUncaughtExceptionHandler();
 
             logger.info("## load canal configurations");
-            String conf = System.getProperty("canal.conf", "classpath:canal.properties");
+            //String conf = System.getProperty("canal.conf", "classpath:canal.properties");
+            String conf = System.getProperty("canal.conf", "classpath:canal_local.properties");
             Properties properties = new Properties();
             if (conf.startsWith(CLASSPATH_URL_PREFIX)) {
                 conf = StringUtils.substringAfter(conf, CLASSPATH_URL_PREFIX);
@@ -118,6 +119,7 @@ public class CanalLauncher {
             runningLatch.await();
             executor.shutdownNow();
         } catch (Throwable e) {
+            e.printStackTrace();
             logger.error("## Something goes wrong when starting up the canal Server:", e);
         }
     }

@@ -61,21 +61,29 @@
 		</sift>
 	</appender>
 
+	<logger name="com.alibaba.otter.canal.server" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+
 	<logger name="com.alibaba.otter.canal.instance" additivity="false">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="CANAL-ROOT" />
 	</logger>
 	<logger name="com.alibaba.otter.canal.deployer" additivity="false">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="CANAL-ROOT" />
+		<appender-ref ref="STDOUT" />
 	</logger>
 	<logger name="com.alibaba.otter.canal.meta.FileMixedMetaManager" additivity="false">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="CANAL-META" />
+		<appender-ref ref="STDOUT" />
 	</logger>
 	<logger name="com.alibaba.otter.canal.connector.kafka" additivity="false">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="CANAL-ROOT" />
+		<appender-ref ref="STDOUT" />
 	</logger>
 	<logger name="com.alibaba.otter.canal.connector.rocketmq" additivity="false">
 		<level value="INFO" />
