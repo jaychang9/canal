@@ -194,6 +194,10 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
 
     private List<Future> send(MQDestination mqDestination, String topicName, Message message, boolean flat) {
         boolean enableDorisRoutineLoad = Optional.ofNullable(mqDestination.getEnableDoris()).orElse(false);
+        if (logger.isDebugEnabled()) {
+            logger.debug("是否开启Doris RoutineLoad 导入:{}",enableDorisRoutineLoad);
+        }
+
         String operateTypeName = mqDestination.getDorisDeleteOnField();
         if (enableDorisRoutineLoad && StringUtils.isBlank(operateTypeName)) {
             operateTypeName = "m_op_type";
@@ -252,6 +256,9 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                                 Map<String, String> dataMap = flatMessagePart.getData().get(0);
                                 if(StringUtils.isNotBlank(operateTypeName)) {
                                     dataMap.put(operateTypeName, flatMessagePart.getType());
+                                }
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("发送到Kafka的消息:{}",dataMap);
                                 }
                                 records.add(new ProducerRecord<>(topicName, i, null, JSON.toJSONBytes(dataMap,
                                         SerializerFeature.WriteMapNullValue)));
