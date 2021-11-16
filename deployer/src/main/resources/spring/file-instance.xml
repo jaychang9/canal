@@ -193,5 +193,6 @@
         <property name="partitionHash" value="${canal.mq.partitionHash}" />
 		<property name="dynamicTopicPartitionNum" value="${canal.mq.dynamicTopicPartitionNum}" />
 		<property name="enableDoris" value="${canal.mq.enableDoris}" />
+		<property name="dorisDeleteOnField" value="${canal.mq.dorisDeleteOnField}" />
 	</bean>
 </beans>

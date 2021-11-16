@@ -15,6 +15,8 @@ public class MQDestination {
     private String  partitionHash;
     private String  dynamicTopic;
     private String  dynamicTopicPartitionNum;
+    private Boolean enableDoris;
+    private String dorisDeleteOnField;
 
     public String getCanalDestination() {
         return canalDestination;
@@ -70,5 +72,21 @@ public class MQDestination {
 
     public void setDynamicTopicPartitionNum(String dynamicTopicPartitionNum) {
         this.dynamicTopicPartitionNum = dynamicTopicPartitionNum;
+    }
+
+    public Boolean getEnableDoris() {
+        return enableDoris;
+    }
+
+    public void setEnableDoris(Boolean enableDoris) {
+        this.enableDoris = enableDoris;
+    }
+
+    public String getDorisDeleteOnField() {
+        return dorisDeleteOnField;
+    }
+
+    public void setDorisDeleteOnField(String dorisDeleteOnField) {
+        this.dorisDeleteOnField = dorisDeleteOnField;
     }
 }

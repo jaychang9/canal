@@ -1,10 +1,7 @@
 package com.alibaba.otter.canal.connector.kafka.producer;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -196,8 +193,11 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
     }
 
     private List<Future> send(MQDestination mqDestination, String topicName, Message message, boolean flat) {
-        boolean enableDorisRoutineLoad = true;
-        String operateTypeName = "m_op_type";
+        boolean enableDorisRoutineLoad = Optional.ofNullable(mqDestination.getEnableDoris()).orElse(false);
+        String operateTypeName = mqDestination.getDorisDeleteOnField();
+        if (enableDorisRoutineLoad && StringUtils.isBlank(operateTypeName)) {
+            operateTypeName = "m_op_type";
+        }
         List<ProducerRecord<String, byte[]>> records = new ArrayList<>();
         // 获取当前topic的分区数
         Integer partitionNum = MQMessageUtils.parseDynamicTopicPartition(topicName, mqDestination.getDynamicTopicPartitionNum());
