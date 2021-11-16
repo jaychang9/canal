@@ -85,6 +85,16 @@
 		<level value="INFO" />
 		<appender-ref ref="CANAL-ROOT" />
 	</logger>
+	<logger name="com.alibaba.otter.canal.server" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<logger name="com.alibaba.otter.canal.connector.kafka.producer" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+
 	<root level="WARN">
 		<!-- <appender-ref ref="STDOUT"/>  -->
 		<appender-ref ref="CANAL-ROOT" />

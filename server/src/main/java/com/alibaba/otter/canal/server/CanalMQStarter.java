@@ -160,6 +160,7 @@ public class CanalMQStarter {
                 canalDestination.setDynamicTopicPartitionNum(mqConfig.getDynamicTopicPartitionNum());
                 canalDestination.setEnableDoris(mqConfig.getEnableDoris());
                 canalDestination.setDorisDeleteOnField(mqConfig.getDorisDeleteOnField());
+                canalDestination.setDynamicTopicPrefix(mqConfig.getDynamicTopicPrefix());
                 if (logger.isDebugEnabled()) {
                     logger.debug("canal.mq的配置信息:{}", JSON.toJSONString(mqConfig));
                 }

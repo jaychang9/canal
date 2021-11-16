@@ -122,4 +122,6 @@ canal instance.properties
 # 是否启用doris routine load(仅支持kafka)
 canal.mq.enableDoris=true
 canal.mq.dorisDeleteOnField=m_op_type
+# 动态topic前缀，仅在配置了canal.mq.dynamicTopic前提下有效
+#canal.mq.dynamicTopicPrefix=doris_
 ```

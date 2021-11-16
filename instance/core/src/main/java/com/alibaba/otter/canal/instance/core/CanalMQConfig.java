@@ -10,6 +10,7 @@ public class CanalMQConfig {
     private String  dynamicTopicPartitionNum;
     private Boolean enableDoris;
     private String dorisDeleteOnField;
+    private String dynamicTopicPrefix;
 
     public String getTopic() {
         return topic;
@@ -73,5 +74,13 @@ public class CanalMQConfig {
 
     public void setDorisDeleteOnField(String dorisDeleteOnField) {
         this.dorisDeleteOnField = dorisDeleteOnField;
+    }
+
+    public String getDynamicTopicPrefix() {
+        return dynamicTopicPrefix;
+    }
+
+    public void setDynamicTopicPrefix(String dynamicTopicPrefix) {
+        this.dynamicTopicPrefix = dynamicTopicPrefix;
     }
 }

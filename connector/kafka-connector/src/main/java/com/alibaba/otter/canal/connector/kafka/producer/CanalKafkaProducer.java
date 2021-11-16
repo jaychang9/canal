@@ -150,7 +150,13 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                     final Message messageSub = entry.getValue();
                     template.submit((Callable) () -> {
                         try {
-                            return send(mqDestination, topicName, messageSub, mqProperties.isFlatMessage());
+                            String dynamicTopic = mqDestination.getDynamicTopic();
+                            String dynamicTopicPrefix = mqDestination.getDynamicTopicPrefix();
+                            String wholeTopicName = topicName;
+                            if (StringUtils.isNotBlank(dynamicTopic) && StringUtils.isNotBlank(dynamicTopicPrefix)) {
+                                wholeTopicName = dynamicTopicPrefix + topicName;
+                            }
+                            return send(mqDestination, wholeTopicName, messageSub, mqProperties.isFlatMessage());
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -256,7 +262,7 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                                 Map<String, String> dataMap = flatMessagePart.getData().get(0);
                                 dataMap.put(dorisDeleteOnField, flatMessagePart.getType());
                                 if (logger.isDebugEnabled()) {
-                                    logger.debug("发送到Kafka的消息:{}",dataMap);
+                                    logger.debug("发送Kafka消息,topicName:{},message:{}",topicName,dataMap);
                                 }
                                 records.add(new ProducerRecord<>(topicName, i, null, JSON.toJSONBytes(dataMap,
                                         SerializerFeature.WriteMapNullValue)));
@@ -272,7 +278,7 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                         Map<String, String> dataMap = flatMessage.getData().get(0);
                         dataMap.put(dorisDeleteOnField,flatMessage.getType());
                         if (logger.isDebugEnabled()) {
-                            logger.debug("发送到Kafka的消息:{}",dataMap);
+                            logger.debug("发送Kafka消息,topicName:{},message:{}",topicName,dataMap);
                         }
                         records.add(new ProducerRecord<>(topicName, partition, null, JSON.toJSONBytes(dataMap,
                                 SerializerFeature.WriteMapNullValue)));
