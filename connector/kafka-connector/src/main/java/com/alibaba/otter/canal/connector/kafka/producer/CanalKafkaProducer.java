@@ -259,13 +259,14 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                         FlatMessage flatMessagePart = partitionFlatMessage[i];
                         if (flatMessagePart != null) {
                             if (enableDorisRoutineLoad) {
-                                Map<String, String> dataMap = flatMessagePart.getData().get(0);
-                                dataMap.put(dorisDeleteOnField, flatMessagePart.getType());
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("发送Kafka消息,topicName:{},message:{}",topicName,dataMap);
+                                for(Map<String, String> dataMap : flatMessagePart.getData()) {
+                                    dataMap.put(dorisDeleteOnField, flatMessagePart.getType());
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug("发送Kafka消息,topicName:{},message:{}", topicName, dataMap);
+                                    }
+                                    records.add(new ProducerRecord<>(topicName, i, null, JSON.toJSONBytes(dataMap,
+                                            SerializerFeature.WriteMapNullValue)));
                                 }
-                                records.add(new ProducerRecord<>(topicName, i, null, JSON.toJSONBytes(dataMap,
-                                        SerializerFeature.WriteMapNullValue)));
                             } else {
                                 records.add(new ProducerRecord<>(topicName, i, null, JSON.toJSONBytes(flatMessagePart,
                                         SerializerFeature.WriteMapNullValue)));
@@ -275,13 +276,14 @@ public class CanalKafkaProducer extends AbstractMQProducer implements CanalMQPro
                 } else {
                     final int partition = mqDestination.getPartition() != null ? mqDestination.getPartition() : 0;
                     if (enableDorisRoutineLoad) {
-                        Map<String, String> dataMap = flatMessage.getData().get(0);
-                        dataMap.put(dorisDeleteOnField,flatMessage.getType());
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("发送Kafka消息,topicName:{},message:{}",topicName,dataMap);
+                        for(Map<String, String> dataMap : flatMessage.getData()) {
+                            dataMap.put(dorisDeleteOnField, flatMessage.getType());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("发送Kafka消息,topicName:{},message:{}", topicName, dataMap);
+                            }
+                            records.add(new ProducerRecord<>(topicName, partition, null, JSON.toJSONBytes(dataMap,
+                                    SerializerFeature.WriteMapNullValue)));
                         }
-                        records.add(new ProducerRecord<>(topicName, partition, null, JSON.toJSONBytes(dataMap,
-                                SerializerFeature.WriteMapNullValue)));
                     } else {
                         records.add(new ProducerRecord<>(topicName, partition, null, JSON.toJSONBytes(flatMessage,
                                 SerializerFeature.WriteMapNullValue)));
